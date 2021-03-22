@@ -1,13 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 import db_session
 from users import User
 from jobs import Jobs
 import datetime
 from forms.user import RegisterForm
+from flask_login import LoginManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+login_manager = LoginManager()
+login_manager.init_app(app)
 
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
 
 def main():
     db_session.global_init('B:/programming/yandex_luceym/flask_learning/flask/some_exercises/easy_one/db/base.db')
@@ -15,7 +22,9 @@ def main():
 
 @app.route('/')
 def index():
-    return render_template("base.html")
+    db_sess = db_session.create_session()
+    jobs = db_sess.query(Jobs).all()
+    return render_template("index.html", jobs=jobs)
 
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
