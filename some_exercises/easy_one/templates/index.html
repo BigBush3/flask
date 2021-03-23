@@ -24,7 +24,11 @@
           <td class="table-primary">Finished</td>
           {%endif%}
         </tr>
+        {% if current_user.is_authenticated %}
+{% endif %}
 
 </table>
+<a href="jobs" class="btn btn-secondary">Добавить новость</a>
+
 {% endfor %}
 {% endblock %}

@@ -4,8 +4,9 @@ from users import User
 from jobs import Jobs
 import datetime
 from forms.user import RegisterForm
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from forms.login import LoginForm
+from forms.jobs import JobsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -68,6 +69,31 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+@app.route('/jobs',  methods=['GET', 'POST'])
+@login_required
+def add_news():
+    form = JobsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        jobs = Jobs()
+        jobs.job = form.job.data
+        jobs.team_leader = form.team_leader.data
+        jobs.duration = form.duration.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+        current_user.jobs.append(jobs)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('jobs.html', title='add work', 
+                           form=form)
 
 
 if __name__ == '__main__':
