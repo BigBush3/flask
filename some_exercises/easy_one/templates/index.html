@@ -24,11 +24,19 @@
           <td class="table-primary">Finished</td>
           {%endif%}
         </tr>
-        {% if current_user.is_authenticated %}
-{% endif %}
 
 </table>
-<a href="jobs" class="btn btn-secondary">Добавить новость</a>
+{% if current_user.is_authenticated and (current_user == item.user or item.user.id == 1)%}
+<div>
+    <a href="/jobs/{{ item.id }}" class="btn btn-warning">
+        Изменить
+    </a>
+    <a href="/jobs_delete/{{ item.id }}" class="btn btn-danger">
+        Удалить
+    </a>
+</div>
+{% endif %}
 
 {% endfor %}
+<a href="jobs" class="btn btn-secondary">Добавить новость</a>
 {% endblock %}
