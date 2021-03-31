@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request
-from data import db_session
+from data import db_session, news_api
 from data.users import User
 import datetime
 from data.news import News
@@ -20,6 +20,7 @@ login_manager.init_app(app)
 
 def main():
     db_session.global_init("flask/flask_sqlalchemy/db/blogs.db")
+    app.register_blueprint(news_api.blueprint)
     app.run()
 
 
