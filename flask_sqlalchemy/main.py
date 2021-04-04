@@ -11,8 +11,10 @@ from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 from forms.news import NewsForm
 from flask import make_response
+from flask_restful import reqparse, abort, Api, Resource
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
